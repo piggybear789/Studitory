@@ -4,15 +4,26 @@ import '@mantine/core/styles.css'
 import { NavbarSimple } from '@/components/NavbarSimple';
 import { useDisclosure } from '@mantine/hooks';
 import { LandingHeaderMenu } from '../../components/LandingHeader'
+import { PracticeMenu } from '../../components/PracticeMenu';
+import { Grid, Container } from '@mantine/core';
 
 
 export default function Portal() {
   const [opened, { toggle }] = useDisclosure();
   return (
-    <div> <LandingHeaderMenu links = {homelinks}/> <NavbarSimple/> 
+    <div style={{ display: 'flex'}}> 
+      <NavbarSimple/> 
+      <div style={{ flex: 1 }}>
+        <LandingHeaderMenu links = {homelinks}/>
+        <div style={{ marginTop: '1rem' }}>
+          <PracticeMenu/>
+        </div>
+      </div>
     </div>
   );
 }
+
+
 
 const homelinks = [
   { link: '#1',
