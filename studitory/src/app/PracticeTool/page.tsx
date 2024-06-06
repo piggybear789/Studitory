@@ -8,7 +8,7 @@ import { PracticeMenu } from '../../components/PracticeMenu';
 import { Grid, Container } from '@mantine/core';
 
 
-export default function Portal() {
+export default function PracticeTool() {
   const [opened, { toggle }] = useDisclosure();
   return (
     <div style={{ display: 'flex'}}> 
@@ -16,7 +16,6 @@ export default function Portal() {
       <div style={{ flex: 1 }}>
         <LandingHeaderMenu links = {homelinks}/>
         <div style={{ marginTop: '1rem' }}>
-          <PracticeMenu/>
         </div>
       </div>
     </div>

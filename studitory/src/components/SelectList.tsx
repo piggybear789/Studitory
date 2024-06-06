@@ -2,18 +2,30 @@ import { useState } from 'react';
 import { Checkbox, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import classes from './SelectList.module.css';
 
-const groceries = ['🍎 Apples', '🍌 Bananas', '🥦 Broccoli', '🥕 Carrots', '🍫 Chocolate'];
+const groceries = ['Select All', '🍎 Apples', '🍌 Bananas', '🥦 Broccoli', '🥕 Carrots', '🍫 Chocolate'];
 
 export function SelectList() {
   const combobox = useCombobox();
 
-  const [value, setValue] = useState<string[]>([]);
+  // Initialize all items as selected
+  const [value, setValue] = useState<string[]>(groceries);
   const [search, setSearch] = useState('');
 
-  const handleValueSelect = (val: string) =>
-    setValue((current) =>
-      current.includes(val) ? current.filter((v) => v !== val) : [...current, val]
-    );
+  const handleValueSelect = (val: string) => {
+    if (val === 'Select All') {
+      if (value.length === groceries.length) {
+        // Deselect all if all are selected
+        setValue([]);
+      } else {
+        // Select all if not all are selected
+        setValue(groceries);
+      }
+    } else {
+      setValue((current) =>
+        current.includes(val) ? current.filter((v) => v !== val) : [...current, val]
+      );
+    }
+  };
 
   const options = groceries
     .filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
@@ -23,6 +35,7 @@ export function SelectList() {
         key={item}
         active={value.includes(item)}
         onMouseOver={() => combobox.resetSelectedOption()}
+        className={classes.option} /* Apply option class for border and padding */
       >
         <Group gap="sm">
           <Checkbox
