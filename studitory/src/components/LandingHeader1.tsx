@@ -50,7 +50,7 @@ export function LandingHeaderMenu({links}) {
 
   return (
     <header className={classes.header}>
-      <Container size="md">
+      <Container size="100%">
         <div className={classes.inner}>
           <Group gap={5} visibleFrom="sm">
             {items}

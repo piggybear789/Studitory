@@ -1,4 +1,4 @@
-  .Main {
+.Main {
     background-color: var(--mantine-color-white); 
     border: 1px solid var(--mantine-color-gray-4); 
     border-radius: var(--mantine-radius-md); 
@@ -6,8 +6,16 @@
     margin-top: 1rem;
     margin-right: 1rem;
     margin-left: 1rem;
-    width: 100%-1rem;
+    width: 100%;
     height: auto;
     padding-left: 1rem;
     padding-bottom: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 1rem;
+  }
+
+
+  .Header {
+    display: flex;
+    justify-content: space-between;
   }

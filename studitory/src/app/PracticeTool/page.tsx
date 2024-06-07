@@ -1,37 +1,35 @@
 'use client';
 import React from 'react';
-import '@mantine/core/styles.css'
+import '@mantine/core/styles.css';
 import { NavbarSimple } from '@/components/NavbarSimple';
 import { useDisclosure } from '@mantine/hooks';
 import { LandingHeaderMenu } from '../../components/LandingHeader1';
-import { PracticeMenu } from '../../components/PracticeMenu';
-import { Grid, Container } from '@mantine/core';
+import { PracticeTool } from '../../components/PracticeTool';
 
-
-export default function PracticeTool() {
+export default function PracticeToolPage() {
   const [opened, { toggle }] = useDisclosure();
   return (
-    <div style={{ display: 'flex'}}> 
-      <NavbarSimple/> 
-      <div style={{ flex: 1 }}>
-        <LandingHeaderMenu links = {homelinks}/>
-        <div style={{ marginTop: '1rem' }}>
+    <div style={{ display: 'flex' }}>
+      <NavbarSimple />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <LandingHeaderMenu links={homelinks} />
+        <div style={{ flex: 1, display:'flex', flexDirection:'row'}}>
+        <PracticeTool/>
         </div>
       </div>
     </div>
   );
 }
 
-
-
 const homelinks = [
-  { link: '#1',
-    label: 'About Us',
+  {
+    link: '#1',
+    label: 'Leave Feedback',
     links: [
-      { link: '/AboutTeam', label: 'Team'},
-      { link: '/AboutMethodology', label: 'Methodology'},
-    ]
-   },
+      { link: '/FeedbackForm', label: 'Feedback Form' },
+      { link: '/Socials', label: 'Socials' },
+    ],
+  },
   {
     link: '#2',
     label: 'Contribute',
@@ -47,7 +45,7 @@ const homelinks = [
     links: [
       { link: '/solutions', label: 'Solutions' },
       { link: '/pricing', label: 'Pricing' },
-      { link: '/demo', label: 'Book a Demo' },
+      { link: '/demo', label: 'Try a Demo' },
     ],
   },
 ];
