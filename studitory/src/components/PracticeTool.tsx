@@ -2,9 +2,7 @@
 import React, { useState } from 'react';
 import '@mantine/core/styles.css';
 import { useDisclosure } from '@mantine/hooks';
-import { SearchableSelect } from './SearchableSelect';
-import { SelectList } from './SelectList';
-import { Button, Slider, Title, Text, Grid, Container, MenuDivider } from '@mantine/core';
+import { Button, Slider, Title, Text, Grid, Container } from '@mantine/core';
 import classes from './PracticeTool.module.css'; // Import CSS module for styling
 
 export function PracticeTool() {
@@ -19,19 +17,30 @@ export function PracticeTool() {
   };
 
   return (
-<div className={classes.Main}>
-    <Grid>
-        <Grid.Col span={{ base: 12 }} className={classes.Header}> 
-        <Text>Topic</Text>
-        <Text>Time Elapsed: 02:33</Text>
+    <div className={classes.Main}>
+      <Grid className={classes.Grid} styles={{
+      inner: { height: '100%'}
+        }}>
+        <Grid.Col span={12} className={classes.Header}>
+          <Text>Topic</Text>
+          <Text>Time Elapsed: 02:33</Text>
         </Grid.Col>
-        <Grid.Col span={{ base: 7 }}> 
+
+        <Grid.Col span={6} className={classes.Left}>
+          {/* Content for the left grid */}
+          Left content
         </Grid.Col>
-        <Grid.Col span={{ base: 5 }}> Hello
+
+        <Grid.Col span={6} className={classes.RightTop}>
+          {/* Content for the right-top grid */}
+          Right top content
         </Grid.Col>
-        <Grid.Col span={{ base: 5 }}> Hello
+
+        <Grid.Col span={6} className={classes.RightBottom}>
+          {/* Content for the right-bottom grid */}
+          Right bottom content
         </Grid.Col>
-    </Grid>
-</div>
+      </Grid>
+    </div>
   );
 }
