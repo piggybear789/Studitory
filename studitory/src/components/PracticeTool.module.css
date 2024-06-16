@@ -1,49 +1,87 @@
 .Main {
+  display: flex;
+  flex-direction: column;
   background-color: var(--mantine-color-white);
   border: 1px solid var(--mantine-color-gray-4);
   border-radius: var(--mantine-radius-md);
-  margin-left: 1rem;
-  margin-top: 1rem;
-  margin-right: 1rem;
+  margin: 1rem;
   width: calc(100% - 2rem);
-  height: calc(100vh - 2rem);
+  height: 100%;
   padding: 1rem;
+  gap: 1rem;
+}
+
+.NonHeaderContent {
+  display: flex;
+  flex: 1;
+  gap: 1rem;
 }
 
 .Header {
   height: 5%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
   border: 1px solid var(--mantine-color-gray-4);
   border-radius: var(--mantine-radius-md);
 }
 
-.Left {
-  height: 95%;
+.QuestionHeader {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
+}
+
+.Question {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+} 
+
+.Left {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 50%;
+  align-items: flex-start;
+  justify-content: flex-start;
   border: 1px solid var(--mantine-color-gray-4);
   border-radius: var(--mantine-radius-md);
+  padding: 1rem;
+  gap: 2rem;
+}
+
+.Right {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .RightTop {
-  height:42.5%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  flex: 1;
+  padding: 1rem;
+  gap: 1rem;
   border: 1px solid var(--mantine-color-gray-4);
   border-radius: var(--mantine-radius-md);
+  overflow: auto;
+}
+
+.TipTap {
+  flex: 1;
 }
 
 .RightBottom {
-  height:42.5%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex: 1;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 1rem;
   border: 1px solid var(--mantine-color-gray-4);
   border-radius: var(--mantine-radius-md);
-}
-.Grid {
-  height: 100%;
 }

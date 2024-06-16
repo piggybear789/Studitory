@@ -3,7 +3,9 @@ import React, { useState } from 'react';
 import '@mantine/core/styles.css';
 import { useDisclosure } from '@mantine/hooks';
 import { Button, Slider, Title, Text, Grid, Container } from '@mantine/core';
-import classes from './PracticeTool.module.css'; // Import CSS module for styling
+import TipTap from './RichTextEditor';
+import '@mantine/tiptap/styles.css';
+import classes from './PracticeTool.module.css'; 
 
 export function PracticeTool() {
   const [opened, { toggle }] = useDisclosure();
@@ -18,29 +20,38 @@ export function PracticeTool() {
 
   return (
     <div className={classes.Main}>
-      <Grid className={classes.Grid} styles={{
-      inner: { height: '100%'}
-        }}>
-        <Grid.Col span={12} className={classes.Header}>
+
+      <div className={classes.Header}>
           <Text>Topic</Text>
           <Text>Time Elapsed: 02:33</Text>
-        </Grid.Col>
+      </div>
 
-        <Grid.Col span={6} className={classes.Left}>
-          {/* Content for the left grid */}
-          Left content
-        </Grid.Col>
+      <div className={classes.NonHeaderContent}>
+        <div className={classes.Left}>
+          <div className={classes.QuestionHeader}>
+            <Text>Question #643</Text>
+            <Text>Difficulty: 75%</Text>
+          </div>
+          <div className={classes.Question}>
+            <Text>Given 50 cards with the integers 1, 2, 3, 
+              ... 50 printed on them, how many ways are there
+               to select 9 distinct cards, such that no two cards
+                have consecutive numbers printed on them?</Text>
+          </div>
+        </div>
 
-        <Grid.Col span={6} className={classes.RightTop}>
-          {/* Content for the right-top grid */}
-          Right top content
-        </Grid.Col>
-
-        <Grid.Col span={6} className={classes.RightBottom}>
-          {/* Content for the right-bottom grid */}
-          Right bottom content
-        </Grid.Col>
-      </Grid>
+        <div className={classes.Right}>
+          <div className={classes.RightTop}>
+            <Text> Free Response </Text>
+            <TipTap/>
+          </div>
+          <div className={classes.RightBottom}>
+            Right bottom content
+          </div>
+        </div>
+ 
+      </div>
+      
     </div>
   );
 }

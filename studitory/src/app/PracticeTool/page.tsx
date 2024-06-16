@@ -13,7 +13,7 @@ export default function PracticeToolPage() {
       <NavbarSimple />
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <LandingHeaderMenu links={homelinks} />
-        <div style={{ flex: 1, display:'flex', flexDirection:'row', marginBottom: '2rem'}}>
+        <div style={{ flex: 1, display:'flex', flexDirection:'column', marginBottom: '1rem'}}>
         <PracticeTool/>
         </div>
       </div>
