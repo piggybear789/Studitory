@@ -1,4 +1,3 @@
-'use client';
 import React, { useState } from 'react';
 import '@mantine/core/styles.css';
 import { useDisclosure } from '@mantine/hooks';

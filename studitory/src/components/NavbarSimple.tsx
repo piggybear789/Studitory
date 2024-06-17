@@ -13,10 +13,11 @@ import {
   IconLogout,
 } from '@tabler/icons-react';
 import { MantineLogo } from '@mantinex/mantine-logo';
+import Link from 'next/link';
 import classes from './NavbarSimple.module.css';
 
 const data = [
-  { link: '', label: 'Practice Tool', icon: IconBellRinging },
+  { link: '/PracticeTool', label: 'Practice Tool', icon: IconBellRinging },
   { link: '', label: 'Question History', icon: IconReceipt2 },
   { link: '', label: 'Discussion', icon: IconFingerprint },
   { link: '', label: 'Notes', icon: IconKey },
@@ -29,19 +30,21 @@ export function NavbarSimple() {
   const [active, setActive] = useState('Billing');
 
   const links = data.map((item) => (
-    <a
-      className={classes.link}
-      data-active={item.label === active || undefined}
-      href={item.link}
-      key={item.label}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(item.label);
-      }}
-    >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
-      <span>{item.label}</span>
-    </a>
+    <Link href={item.link} key={item.label} passHref>
+      <a
+        className={classes.link}
+        data-active={item.label === active || undefined}
+        onClick={(event) => {
+          if (!item.link) {
+            event.preventDefault();
+          }
+          setActive(item.label);
+        }}
+      >
+        <item.icon className={classes.linkIcon} stroke={1.5} />
+        <span>{item.label}</span>
+      </a>
+    </Link>
   ));
 
   return (

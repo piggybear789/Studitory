@@ -1,14 +1,21 @@
-'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '@mantine/core/styles.css';
 import { useDisclosure } from '@mantine/hooks';
 import { Button, Slider, Title, Text, Grid, Container } from '@mantine/core';
 import TipTap from './RichTextEditor';
 import '@mantine/tiptap/styles.css';
-import classes from './PracticeTool.module.css'; 
+import Timer from './Timer';
+import classes from './PracticeTool.module.css';
+
 
 export function PracticeTool() {
   const [opened, { toggle }] = useDisclosure();
+  const [startTimestamp, setStartTimestamp] = useState<number>(new Date().getTime());
+  
+  useEffect(() => {
+    setStartTimestamp(new Date().getTime());
+  }, []);
+  
 
   const getFlavorText = (value: number) => {
     if (value <= 20) return 'Very Easy - Great for beginners!';
@@ -23,7 +30,7 @@ export function PracticeTool() {
 
       <div className={classes.Header}>
           <Text>Topic</Text>
-          <Text>Time Elapsed: 02:33</Text>
+          <Timer startTimestamp={startTimestamp} />
       </div>
 
       <div className={classes.NonHeaderContent}>
@@ -46,7 +53,7 @@ export function PracticeTool() {
             <TipTap/>
           </div>
           <div className={classes.RightBottom}>
-            Right bottom content
+            <Text> Discussion Section </Text>
           </div>
         </div>
  

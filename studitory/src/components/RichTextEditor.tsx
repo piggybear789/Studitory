@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { useEditor, BubbleMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -6,6 +7,7 @@ import Underline from '@tiptap/extension-underline';
 import Superscript from '@tiptap/extension-superscript';
 import Subscript from '@tiptap/extension-subscript';
 import classes from './RichTextEditor.module.css';
+import Placeholder from '@tiptap/extension-placeholder';
 
 
 
@@ -17,12 +19,13 @@ function TipTap() {
         orderedList: false,
         listItem: false,
       }),
+      Placeholder.configure({ placeholder: 'Provide your answer to this question here' }),
       Link,
       Underline,
       Subscript,
       Superscript,
     ],
-    content: '<p>Write your answer to the question here</p>',
+    content: '',
   });
 
   return (
