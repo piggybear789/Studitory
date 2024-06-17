@@ -1,25 +1,12 @@
 'use client';
+
 import React from 'react';
 import '@mantine/core/styles.css';
 import { NavbarSimple } from '@/components/NavbarSimple';
 import { useDisclosure } from '@mantine/hooks';
-import { LandingHeaderMenu } from '../../components/LandingHeader1';
-import { PracticeMenu } from '../../components/PracticeMenu';
-
-export default function Portal() {
-  const [opened, { toggle }] = useDisclosure();
-  return (
-    <div style={{ display: 'flex' }}>
-      <NavbarSimple />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <LandingHeaderMenu links={homelinks} />
-        <div style={{ flex: 1 }}>
-          <PracticeMenu />
-        </div>
-      </div>
-    </div>
-  );
-}
+import { useRouter } from 'next/navigation';
+import { LandingHeaderMenu } from '@/components/LandingHeader1';
+import { PracticeMenu } from '@/components/PracticeMenu';
 
 const homelinks = [
   {
@@ -49,3 +36,31 @@ const homelinks = [
     ],
   },
 ];
+
+export default function Portal() {
+  const [opened, { toggle }] = useDisclosure();
+  const router = useRouter();
+
+  const handleGenerateQuestions = ({ syllabus, grade, subject, difficulty }: { syllabus: string | null, grade: string | null, subject: string | null, difficulty: number }) => {
+    const params = new URLSearchParams({
+      syllabus: syllabus ?? '',
+      grade: grade ?? '',
+      subject: subject  ?? '',
+      difficulty: String(difficulty),
+    }).toString();
+
+    router.push(`/PracticeTool?${params}`);
+  };
+
+  return (
+    <div style={{ display: 'flex' }}>
+      <NavbarSimple />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <LandingHeaderMenu links={homelinks} />
+        <div style={{ flex: 1 }}>
+          <PracticeMenu onGenerateQuestions={handleGenerateQuestions} />
+        </div>
+      </div>
+    </div>
+  );
+}

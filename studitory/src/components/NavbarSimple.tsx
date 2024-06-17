@@ -11,12 +11,14 @@ import {
   IconReceipt2,
   IconSwitchHorizontal,
   IconLogout,
+  IconHome
 } from '@tabler/icons-react';
 import { MantineLogo } from '@mantinex/mantine-logo';
 import Link from 'next/link';
 import classes from './NavbarSimple.module.css';
 
 const data = [
+  { link: '/Portal', label: 'Portal', icon: IconHome },
   { link: '/PracticeTool', label: 'Practice Tool', icon: IconBellRinging },
   { link: '', label: 'Question History', icon: IconReceipt2 },
   { link: '', label: 'Discussion', icon: IconFingerprint },
@@ -30,7 +32,7 @@ export function NavbarSimple() {
   const [active, setActive] = useState('Billing');
 
   const links = data.map((item) => (
-    <Link href={item.link} key={item.label} passHref>
+    <Link href={item.link} key={item.label} legacyBehavior passHref>
       <a
         className={classes.link}
         data-active={item.label === active || undefined}

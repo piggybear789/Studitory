@@ -1,27 +1,23 @@
 import { useState } from 'react';
 import { Combobox, InputBase, useCombobox } from '@mantine/core';
 
-const groceries = [
-  '🍎 Apples',
-  '🍌 Bananas',
-  '🥦 Broccoli',
-  '🥕 Carrots',
-  '🍫 Chocolate',
-  '🍇 Grapes',
-];
+type SearchableSelectProps = {
+  value: string | null;
+  onChange: (value: string | null) => void;
+  data: string[];
+};
 
-export function SearchableSelect() {
+export function SearchableSelect({ value, onChange, data }: SearchableSelectProps) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
 
-  const [value, setValue] = useState<string | null>(null);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(value || '');
 
-  const shouldFilterOptions = groceries.every((item) => item !== search);
+  const shouldFilterOptions = data.every((item) => item !== search);
   const filteredOptions = shouldFilterOptions
-    ? groceries.filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
-    : groceries;
+    ? data.filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
+    : data;
 
   const options = filteredOptions.map((item) => (
     <Combobox.Option value={item} key={item}>
@@ -34,7 +30,7 @@ export function SearchableSelect() {
       store={combobox}
       withinPortal={false}
       onOptionSubmit={(val) => {
-        setValue(val);
+        onChange(val);
         setSearch(val);
         combobox.closeDropdown();
       }}
@@ -47,6 +43,7 @@ export function SearchableSelect() {
             combobox.openDropdown();
             combobox.updateSelectedOptionIndex();
             setSearch(event.currentTarget.value);
+            onChange(event.currentTarget.value);
           }}
           onClick={() => combobox.openDropdown()}
           onFocus={() => combobox.openDropdown()}

@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
-import '@mantine/core/styles.css';
-import { useDisclosure } from '@mantine/hooks';
+import { Grid, Button, Slider, Title, Text, Notification } from '@mantine/core';
 import { SearchableSelect } from './SearchableSelect';
 import { SelectList } from './SelectList';
-import { Button, Slider, Title, Text, Grid, Container, MenuDivider } from '@mantine/core';
-import classes from './PracticeMenu.module.css'; // Import CSS module for styling
+import classes from './PracticeMenu.module.css';
 
-export function PracticeMenu() {
-  const [opened, { toggle }] = useDisclosure();
-  const [difficulty, setDifficulty] = useState(50); // Initialize slider value to 50
+
+type PracticeMenuProps = {
+  onGenerateQuestions: (params: { syllabus: string | null; grade: string | null; subject: string | null; difficulty: number }) => void;
+};
+
+const syllabusData = ['Syllabus 1', 'Syllabus 2', 'Syllabus 3'];
+const gradeData = ['Grade 1', 'Grade 2', 'Grade 3'];
+const subjectData = ['Math', 'Science', 'History'];
+
+export function PracticeMenu({ onGenerateQuestions }: PracticeMenuProps) {
+  const [syllabus, setSyllabus] = useState<string | null>(null);
+  const [grade, setGrade] = useState<string | null>(null);
+  const [subject, setSubject] = useState<string | null>(null);
+  const [difficulty, setDifficulty] = useState(50);
+  const [error, setError] = useState<string | null>(null);
 
   const getFlavorText = (value: number) => {
     if (value <= 20) return 'Very Easy - Great for beginners!';
@@ -18,54 +28,70 @@ export function PracticeMenu() {
     return 'Very Hard - Only the brave should attempt!';
   };
 
+  const handleGenerateQuestions = () => {
+    if (!syllabus || !grade || !subject) {
+      setError('Please fill out all fields before generating questions.');
+      return;
+    }
+    setError(null);
+    onGenerateQuestions({ syllabus, grade, subject, difficulty });
+  };
+
   return (
     <div className={classes.Main}>
-        <Grid gutter={{ base: '2rem' }}>
-          <Grid.Col span={{ base: 3.5 }}>
-            <div style={{ paddingBlock: '1rem' }}>
-              <Title order={2}>Syllabus:</Title>
-            </div>
-            <SearchableSelect />
-            <div style={{ paddingBlock: '1rem' }}>
-              <Title order={2}>Grade:</Title>
-            </div>
-            <SearchableSelect />
-            <div style={{ paddingBlock: '1rem' }}>
-              <Title order={2}>Subject:</Title>
-            </div>
-            <SearchableSelect />
-          </Grid.Col>
-          <Grid.Col span={{ base: 3.5 }}>
-            <div style={{ paddingBlock: '1rem' }}>
-              <Title order={2}>Topics:</Title>
-            </div>
-            <SelectList />
-          </Grid.Col>
-          <Grid.Col span={{ base: 3.5 }}>
-            <div style={{ paddingBlock: '1rem' }}>
-              <Title order={2}>Difficulty:</Title>
-            </div>
-            <div style={{ paddingBlock: '0.5rem 2rem'} }>
-              <Text>
-                Choose the level of difficulty you want to attempt
-              </Text>
-            </div>
-            <Slider
-              color="blue"
-              value={difficulty}
-              onChange={setDifficulty} // Update slider value
-              marks={[
-                { value: 20, label: '20' },
-                { value: 40, label: '40' },
-                { value: 60, label: '60' },
-                { value: 80, label: '80' },
-              ]}
-            />
-            <Text style={{ paddingBlock: '3rem 1rem' }}>Current Difficulty: {difficulty}</Text>
-            <Text>{getFlavorText(difficulty)}</Text>
-          </Grid.Col>
-        </Grid>
-        <Button onClick={toggle} style={{ marginTop: '1rem' }}>Generate Questions</Button>
+      <Grid gutter={{ base: '2rem' }}>
+        <Grid.Col span={{ base: 3.5 }}>
+          <div style={{ paddingBlock: '1rem' }}>
+            <Title order={2}>Syllabus:</Title>
+          </div>
+          <SearchableSelect value={syllabus} onChange={setSyllabus} data={syllabusData} />
+
+          <div style={{ paddingBlock: '1rem' }}>
+            <Title order={2}>Grade:</Title>
+          </div>
+          <SearchableSelect value={grade} onChange={setGrade} data={gradeData} />
+
+          <div style={{ paddingBlock: '1rem' }}>
+            <Title order={2}>Subject:</Title>
+          </div>
+          <SearchableSelect value={subject} onChange={setSubject} data={subjectData} />
+        </Grid.Col>
+        <Grid.Col span={{ base: 3.5 }}>
+          <div style={{ paddingBlock: '1rem' }}>
+            <Title order={2}>Topics:</Title>
+          </div>
+          <SelectList />
+        </Grid.Col>
+        <Grid.Col span={{ base: 3.5 }}>
+          <div style={{ paddingBlock: '1rem' }}>
+            <Title order={2}>Difficulty:</Title>
+          </div>
+          <div style={{ paddingBlock: '0.5rem 2rem' }}>
+            <Text>Choose the level of difficulty you want to attempt</Text>
+          </div>
+          <Slider
+            color="blue"
+            value={difficulty}
+            onChange={setDifficulty} // Update slider value
+            marks={[
+              { value: 20, label: '20' },
+              { value: 40, label: '40' },
+              { value: 60, label: '60' },
+              { value: 80, label: '80' },
+            ]}
+          />
+          <Text style={{ paddingBlock: '3rem 1rem' }}>Current Difficulty: {difficulty}</Text>
+          <Text>{getFlavorText(difficulty)}</Text>
+        </Grid.Col>
+      </Grid>
+      {error && (
+        <Notification color="red" onClose={() => setError(null)}>
+          {error}
+        </Notification>
+      )}
+      <Button onClick={handleGenerateQuestions} style={{ marginTop: '1rem' }}>
+        Generate Questions
+      </Button>
     </div>
   );
 }
