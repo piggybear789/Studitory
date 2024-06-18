@@ -6,17 +6,18 @@ import classes from './PracticeMenu.module.css';
 
 
 type PracticeMenuProps = {
-  onGenerateQuestions: (params: { syllabus: string | null; grade: string | null; subject: string | null; difficulty: number }) => void;
+  onGenerateQuestions: ({ syllabus, grade, subject, difficulty }: { syllabus: string | null, grade: string | null, subject: string | null, difficulty: number }) => void;
+  syllabusOptions: string[];
+  gradeOptions: string[];
+  subjectOptions: string[];
+  topicOptions: string[];
 };
 
-const syllabusData = ['Syllabus 1', 'Syllabus 2', 'Syllabus 3'];
-const gradeData = ['Grade 1', 'Grade 2', 'Grade 3'];
-const subjectData = ['Math', 'Science', 'History'];
-
-export function PracticeMenu({ onGenerateQuestions }: PracticeMenuProps) {
+export function PracticeMenu({ onGenerateQuestions, syllabusOptions, gradeOptions, subjectOptions, topicOptions }: PracticeMenuProps) {
   const [syllabus, setSyllabus] = useState<string | null>(null);
   const [grade, setGrade] = useState<string | null>(null);
   const [subject, setSubject] = useState<string | null>(null);
+  const [topic, setTopic] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState(50);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,17 +45,17 @@ export function PracticeMenu({ onGenerateQuestions }: PracticeMenuProps) {
           <div style={{ paddingBlock: '1rem' }}>
             <Title order={2}>Syllabus:</Title>
           </div>
-          <SearchableSelect value={syllabus} onChange={setSyllabus} data={syllabusData} />
+          <SearchableSelect value={syllabus} onChange={setSyllabus} data={syllabusOptions} />
 
           <div style={{ paddingBlock: '1rem' }}>
             <Title order={2}>Grade:</Title>
           </div>
-          <SearchableSelect value={grade} onChange={setGrade} data={gradeData} />
+          <SearchableSelect value={grade} onChange={setGrade} data={gradeOptions} />
 
           <div style={{ paddingBlock: '1rem' }}>
             <Title order={2}>Subject:</Title>
           </div>
-          <SearchableSelect value={subject} onChange={setSubject} data={subjectData} />
+          <SearchableSelect value={subject} onChange={setSubject} data={subjectOptions} />
         </Grid.Col>
         <Grid.Col span={{ base: 3.5 }}>
           <div style={{ paddingBlock: '1rem' }}>

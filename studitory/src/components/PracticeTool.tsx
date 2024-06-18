@@ -5,7 +5,7 @@ import TipTap from './RichTextEditor';
 import '@mantine/tiptap/styles.css';
 import Timer from './Timer';
 import classes from './PracticeTool.module.css';
-import { supabase } from '../../supabase';
+import { createClient } from '../utils/supabase/client';
 
 type PracticeToolProps = {
   syllabus: string | null;
@@ -25,6 +25,7 @@ export function PracticeTool({ syllabus, grade, subject, difficulty }: PracticeT
   }, []);
 
   useEffect(() => {
+    const supabase = createClient();
     const fetchQuestion = async () => {
       console.log('Fetching questions with:', { syllabus, grade, subject, difficulty });
     
