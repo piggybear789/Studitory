@@ -5,6 +5,7 @@ import TipTap from './RichTextEditor';
 import '@mantine/tiptap/styles.css';
 import Timer from './Timer';
 import classes from './PracticeTool.module.css';
+import { supabase } from '../../supabase';
 
 type PracticeToolProps = {
   syllabus: string | null;
@@ -15,10 +16,46 @@ type PracticeToolProps = {
 
 export function PracticeTool({ syllabus, grade, subject, difficulty }: PracticeToolProps) {
   const [startTimestamp, setStartTimestamp] = useState<number>(new Date().getTime());
+  const [question, setQuestion] = useState<string | null>(null);
+  const [questionId, setQuestionId] = useState<number | null>(null); 
+  const [difficultyLevel, setDifficultyLevel] = useState<number | null>(null);
 
   useEffect(() => {
     setStartTimestamp(new Date().getTime());
   }, []);
+
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      console.log('Fetching questions with:', { syllabus, grade, subject, difficulty });
+    
+      const { data, error } = await supabase
+        .rpc('get_question', {
+          syllabus_input: syllabus,
+          grade_input: grade,
+          subject_input: subject,
+          difficulty_input: difficulty,
+        });
+
+      if (error) {
+        console.error('Error fetching question:', error);
+        setQuestion('Error fetching question. Please try again.');
+        return;
+      }
+
+      if (data && data.length > 0) {
+        const questionData = data[0];
+        setQuestion(questionData.question);
+        setQuestionId(questionData.id); // Set the question ID
+        setDifficultyLevel(questionData.difficulty); // Set the difficulty level
+      } else {
+        setQuestion('No question found for the given parameters.');
+      }
+    };
+
+    if (syllabus && grade && subject) {
+      fetchQuestion();
+    }
+  }, [syllabus, grade, subject, difficulty]);
 
   return (
     <div className={classes.Main}>
@@ -30,15 +67,11 @@ export function PracticeTool({ syllabus, grade, subject, difficulty }: PracticeT
       <div className={classes.NonHeaderContent}>
         <div className={classes.Left}>
           <div className={classes.QuestionHeader}>
-            <Text>Question #643</Text>
-            <Text>Difficulty: 75%</Text>
+            <Text>Question #{questionId}</Text>
+            <Text>Difficulty: {difficultyLevel}</Text>
           </div>
           <div className={classes.Question}>
-            <Text>
-              Given 50 cards with the integers 1, 2, 3, ... 50 printed on them,
-              how many ways are there to select 9 distinct cards, such that no two cards
-              have consecutive numbers printed on them?
-            </Text>
+            <Text>{question}</Text>
           </div>
         </div>
 

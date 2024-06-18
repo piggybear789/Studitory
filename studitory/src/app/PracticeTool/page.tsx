@@ -3,6 +3,7 @@ import React from 'react';
 import '@mantine/core/styles.css';
 import { NavbarSimple } from '@/components/NavbarSimple';
 import { useDisclosure } from '@mantine/hooks';
+import { useRouter } from 'next/router';
 import { LandingHeaderMenu } from '../../components/LandingHeader1';
 import { PracticeTool } from '../../components/PracticeTool';
 
@@ -14,7 +15,7 @@ export default function PracticeToolPage() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <LandingHeaderMenu links={homelinks} />
         <div style={{ flex: 1, display:'flex', flexDirection:'column', marginBottom: '1rem'}}>
-        <PracticeTool/>
+        <PracticeTool syllabus={null} grade={null} subject={null} difficulty={0}/>
         </div>
       </div>
     </div>

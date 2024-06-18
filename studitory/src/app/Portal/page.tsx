@@ -1,5 +1,4 @@
 'use client';
-
 import React from 'react';
 import '@mantine/core/styles.css';
 import { NavbarSimple } from '@/components/NavbarSimple';
