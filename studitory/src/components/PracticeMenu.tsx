@@ -4,6 +4,7 @@ import { Grid, Button, Slider, Title, Text, Notification } from '@mantine/core';
 import { SearchableSelect } from './SearchableSelect';
 import classes from './PracticeMenu.module.css';
 import { supabase } from '../utils/supabase/client';
+import { SelectList } from './SelectList';
 
 type PracticeMenuProps = {};
 
@@ -16,34 +17,91 @@ export function PracticeMenu({}: PracticeMenuProps) {
   const [syllabus, setSyllabus] = useState<string | null>(null);
   const [grade, setGrade] = useState<string | null>(null);
   const [subject, setSubject] = useState<string | null>(null);
-  const [topic, setTopic] = useState<string | null>(null);
+  const [topics, setTopics] = useState<string[]>([]);
   const [difficulty, setDifficulty] = useState(50);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchOptions = async () => {
+    const fetchSyllabusOptions = async () => {
       try {
-        const { data: syllabusData, error: syllabusError } = await supabase.from("DIM_PRIMARY_QUESTION").select("SYLLABUS");
-        const { data: gradeData, error: gradeError } = await supabase.from("DIM_PRIMARY_QUESTION").select("GRADE");
-        const { data: subjectData, error: subjectError } = await supabase.from("DIM_PRIMARY_QUESTION").select("SUBJECT");
-        const { data: topicData, error: topicError } = await supabase.from("DIM_PRIMARY_QUESTION").select("TOPIC");
-
-        if (syllabusError || gradeError || subjectError || topicError) {
-          throw new Error('Error fetching options from Supabase');
-        }
-
-        setSyllabusOptions(syllabusData?.map((item) => item.SYLLABUS) ?? []);
-        setGradeOptions(gradeData?.map((item) => item.GRADE) ?? []);
-        setSubjectOptions(subjectData?.map((item) => item.SUBJECT) ?? []);
-        setTopicOptions(topicData?.map((item) => item.TOPIC) ?? []);
+        const { data, error } = await supabase.from("DIM_PRIMARY_QUESTION").select("SYLLABUS");
+        if (error) throw error;
+        const uniqueSyllabus = Array.from(new Set(data?.map((item) => item.SYLLABUS) ?? []));
+        setSyllabusOptions(uniqueSyllabus);
       } catch (error) {
-        console.error('Error fetching options:', error);
-        setError('Failed to fetch options from Supabase');
+        console.error('Error fetching syllabus options:', error);
+        setError('Failed to fetch syllabus options from Supabase');
       }
     };
 
-    fetchOptions();
+    fetchSyllabusOptions();
   }, []);
+
+  useEffect(() => {
+    if (!syllabus) return;
+
+    const fetchGradeOptions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("DIM_PRIMARY_QUESTION")
+          .select("GRADE")
+          .eq("SYLLABUS", syllabus);
+        if (error) throw error;
+        const uniqueGrades = Array.from(new Set(data?.map((item) => item.GRADE) ?? []));
+        setGradeOptions(uniqueGrades);
+      } catch (error) {
+        console.error('Error fetching grade options:', error);
+        setError('Failed to fetch grade options from Supabase');
+      }
+    };
+
+    fetchGradeOptions();
+  }, [syllabus]);
+
+  useEffect(() => {
+    if (!syllabus || !grade) return;
+
+    const fetchSubjectOptions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("DIM_PRIMARY_QUESTION")
+          .select("SUBJECT")
+          .eq("SYLLABUS", syllabus)
+          .eq("GRADE", grade);
+        if (error) throw error;
+        const uniqueSubjects = Array.from(new Set(data?.map((item) => item.SUBJECT) ?? []));
+        setSubjectOptions(uniqueSubjects);
+      } catch (error) {
+        console.error('Error fetching subject options:', error);
+        setError('Failed to fetch subject options from Supabase');
+      }
+    };
+
+    fetchSubjectOptions();
+  }, [syllabus, grade]);
+
+  useEffect(() => {
+    if (!syllabus || !grade || !subject) return;
+
+    const fetchTopicOptions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("DIM_PRIMARY_QUESTION")
+          .select("TOPIC")
+          .eq("SYLLABUS", syllabus)
+          .eq("GRADE", grade)
+          .eq("SUBJECT", subject);
+        if (error) throw error;
+        const uniqueTopics = Array.from(new Set(data?.map((item) => item.TOPIC) ?? []));
+        setTopicOptions(uniqueTopics);
+      } catch (error) {
+        console.error('Error fetching topic options:', error);
+        setError('Failed to fetch topic options from Supabase');
+      }
+    };
+
+    fetchTopicOptions();
+  }, [syllabus, grade, subject]);
 
   const getFlavorText = (value: number) => {
     if (value <= 20) return 'Very Easy - Great for beginners!';
@@ -64,18 +122,22 @@ export function PracticeMenu({}: PracticeMenuProps) {
       syllabus: syllabus ?? '',
       grade: grade ?? '',
       subject: subject ?? '',
-      topic: topic ?? '',
       difficulty: String(difficulty),
-    }).toString();
+    });
 
-    // Navigate to the client-side route
-    window.location.href = `/PracticeTool?${params}`;
+    if (topics.length > 0) {
+      topics.forEach(topic => {
+        params.append('topic', topic);
+      });
+    }
+
+    window.location.href = `/PracticeTool?${params.toString()}`;
   };
 
   return (
     <div className={classes.Main}>
-      <Grid gutter={{ base: '2rem' }}>
-        <Grid.Col span={{ base: 3.5 }}>
+      <Grid gutter= '2rem' >
+        <Grid.Col span={4}>
           <div style={{ paddingBlock: '1rem' }}>
             <Title order={2}>Syllabus:</Title>
           </div>
@@ -91,13 +153,15 @@ export function PracticeMenu({}: PracticeMenuProps) {
           </div>
           <SearchableSelect value={subject} onChange={setSubject} data={subjectOptions} />
         </Grid.Col>
-        <Grid.Col span={{ base: 3.5 }}>
+
+        <Grid.Col span={4}>
           <div style={{ paddingBlock: '1rem' }}>
             <Title order={2}>Topics:</Title>
           </div>
-          <SearchableSelect value={topic} onChange={setTopic} data={topicOptions} />
+          <SelectList value={topics} onChange={setTopics} data={topicOptions} multiple />
         </Grid.Col>
-        <Grid.Col span={{ base: 3.5 }}>
+
+        <Grid.Col span={4}>
           <div style={{ paddingBlock: '1rem' }}>
             <Title order={2}>Difficulty:</Title>
           </div>
@@ -119,6 +183,7 @@ export function PracticeMenu({}: PracticeMenuProps) {
           <Text>{getFlavorText(difficulty)}</Text>
         </Grid.Col>
       </Grid>
+
       {error && (
         <Notification color="red" onClose={() => setError(null)}>
           {error}

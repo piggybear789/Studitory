@@ -54,7 +54,7 @@ export function NavbarSimple() {
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-between">
           <MantineLogo size={28} />
-          <Code fw={700}>v3.1.2</Code>
+          <Code fw={700}>v1.0.0</Code>
         </Group>
         {links}
       </div>

@@ -30,19 +30,19 @@ export function SelectList({ value, onChange, data }: SelectListProps) {
     .filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
     .map((item) => (
       <Combobox.Option
-        value={item}
         key={item}
+        value={item}
         active={value.includes(item)}
-        onMouseOver={() => combobox.resetSelectedOption()}
+        onClick={() => handleValueSelect(item)} // Change this line to use onClick
         className={classes.option}
       >
         <Group gap="sm">
           <Checkbox
             checked={value.includes(item)}
-            onChange={() => {}}
+            readOnly
             aria-hidden
             tabIndex={-1}
-            style={{ pointerEvents: 'none' }}
+            style={{ pointerEvents: 'none' }} // Prevent clicking the checkbox from closing dropdown
           />
           <span>{item}</span>
         </Group>
@@ -50,7 +50,7 @@ export function SelectList({ value, onChange, data }: SelectListProps) {
     ));
 
   return (
-    <Combobox store={combobox} onOptionSubmit={handleValueSelect}>
+    <Combobox store={combobox}>
       <Combobox.EventsTarget>
         <TextInput
           placeholder="Search topics"

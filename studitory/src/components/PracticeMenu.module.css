@@ -9,5 +9,7 @@
     width: 100%-1rem;
     height: auto;
     padding-left: 1rem;
-    padding-bottom: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 2rem;
+    gap: 1rem;
   }

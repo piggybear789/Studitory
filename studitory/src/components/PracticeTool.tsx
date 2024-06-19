@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import '@mantine/core/styles.css';
+import '@mantine/tiptap/styles.css';
 import { Text } from '@mantine/core';
 import TipTap from './RichTextEditor';
 import Timer from './Timer';
@@ -21,7 +22,6 @@ export function PracticeTool() {
   const topic = searchParams.get('topic');
   const difficultyString = searchParams.get('difficulty');
   const difficulty = difficultyString ? parseInt(difficultyString, 10) : 50;
-  
 
   useEffect(() => {
     setStartTimestamp(new Date().getTime());
@@ -31,26 +31,24 @@ export function PracticeTool() {
     const fetchQuestion = async () => {
       console.log('Fetching questions with:', { syllabus, grade, subject, topic, difficulty });
       try {
-        const { data: questionData, error: questionError } = await supabase
-              .from("RANDOM_QUESTION")
-              .select("*")
-              .eq("SYLLABUS", syllabus || '') 
-              .eq("GRADE", grade || '')
-              .eq("SUBJECT", subject || '')
-              .eq("TOPIC", topic || '')
-              .range("DIFFICULTY", difficulty - 5, difficulty + 5)
-              .limit(1);
+        const { data: questionData, error: questionError } = await supabase.rpc('get_random_question', {
+          p_syllabus: syllabus || null,
+          p_grade: grade || null,
+          p_subject: subject || null,
+          p_topic: topic || null,
+          p_difficulty_min: difficulty - 5,
+          p_difficulty_max: difficulty + 5,
+        });
 
         if (questionError) {
           throw questionError;
         }
 
-
         if (questionData && questionData.length > 0) {
           const questionDisplayed = questionData[0];
-          setQuestion(questionDisplayed.QUESTION);
-          setQuestionId(questionDisplayed.ID);
-          setDifficultyLevel(questionDisplayed.DIFFICULTY) ;
+          setQuestion(questionDisplayed.question);
+          setQuestionId(questionDisplayed.id);
+          setDifficultyLevel(questionDisplayed.difficulty);
         } else {
           setQuestion('No question found for the given parameters.');
         }
@@ -68,7 +66,7 @@ export function PracticeTool() {
   return (
     <div className={classes.Main}>
       <div className={classes.Header}>
-        <Text>{syllabus} {'>'} {grade} {'>'} {topic}</Text>
+        <Text>{syllabus} {'>'} {grade} {'>'} {subject} {'>'} {topic}</Text>
         <Timer startTimestamp={startTimestamp} />
       </div>
 
@@ -86,7 +84,7 @@ export function PracticeTool() {
         <div className={classes.Right}>
           <div className={classes.RightTop}>
             <Text>Free Response</Text>
-            <TipTap />
+            <TipTap/>
           </div>
           <div className={classes.RightBottom}>
             <Text>Discussion Section</Text>
