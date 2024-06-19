@@ -14,10 +14,7 @@ export function SearchableSelect({ value, onChange, data }: SearchableSelectProp
 
   const [search, setSearch] = useState(value || '');
 
-  const shouldFilterOptions = data.every((item) => item !== search);
-  const filteredOptions = shouldFilterOptions
-    ? data.filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
-    : data;
+  const filteredOptions = data.filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()));
 
   const options = filteredOptions.map((item) => (
     <Combobox.Option value={item} key={item}>
@@ -43,7 +40,6 @@ export function SearchableSelect({ value, onChange, data }: SearchableSelectProp
             combobox.openDropdown();
             combobox.updateSelectedOptionIndex();
             setSearch(event.currentTarget.value);
-            onChange(event.currentTarget.value);
           }}
           onClick={() => combobox.openDropdown()}
           onFocus={() => combobox.openDropdown()}

@@ -1,25 +1,49 @@
-import React, { useState } from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 import { Grid, Button, Slider, Title, Text, Notification } from '@mantine/core';
 import { SearchableSelect } from './SearchableSelect';
-import { SelectList } from './SelectList';
 import classes from './PracticeMenu.module.css';
+import { supabase } from '../utils/supabase/client';
 
+type PracticeMenuProps = {};
 
-type PracticeMenuProps = {
-  onGenerateQuestions: ({ syllabus, grade, subject, difficulty }: { syllabus: string | null, grade: string | null, subject: string | null, difficulty: number }) => void;
-  syllabusOptions: string[];
-  gradeOptions: string[];
-  subjectOptions: string[];
-  topicOptions: string[];
-};
+export function PracticeMenu({}: PracticeMenuProps) {
+  const [syllabusOptions, setSyllabusOptions] = useState<string[]>([]);
+  const [gradeOptions, setGradeOptions] = useState<string[]>([]);
+  const [subjectOptions, setSubjectOptions] = useState<string[]>([]);
+  const [topicOptions, setTopicOptions] = useState<string[]>([]);
 
-export function PracticeMenu({ onGenerateQuestions, syllabusOptions, gradeOptions, subjectOptions, topicOptions }: PracticeMenuProps) {
   const [syllabus, setSyllabus] = useState<string | null>(null);
   const [grade, setGrade] = useState<string | null>(null);
   const [subject, setSubject] = useState<string | null>(null);
   const [topic, setTopic] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState(50);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const { data: syllabusData, error: syllabusError } = await supabase.from("DIM_PRIMARY_QUESTION").select("SYLLABUS");
+        const { data: gradeData, error: gradeError } = await supabase.from("DIM_PRIMARY_QUESTION").select("GRADE");
+        const { data: subjectData, error: subjectError } = await supabase.from("DIM_PRIMARY_QUESTION").select("SUBJECT");
+        const { data: topicData, error: topicError } = await supabase.from("DIM_PRIMARY_QUESTION").select("TOPIC");
+
+        if (syllabusError || gradeError || subjectError || topicError) {
+          throw new Error('Error fetching options from Supabase');
+        }
+
+        setSyllabusOptions(syllabusData?.map((item) => item.SYLLABUS) ?? []);
+        setGradeOptions(gradeData?.map((item) => item.GRADE) ?? []);
+        setSubjectOptions(subjectData?.map((item) => item.SUBJECT) ?? []);
+        setTopicOptions(topicData?.map((item) => item.TOPIC) ?? []);
+      } catch (error) {
+        console.error('Error fetching options:', error);
+        setError('Failed to fetch options from Supabase');
+      }
+    };
+
+    fetchOptions();
+  }, []);
 
   const getFlavorText = (value: number) => {
     if (value <= 20) return 'Very Easy - Great for beginners!';
@@ -35,7 +59,17 @@ export function PracticeMenu({ onGenerateQuestions, syllabusOptions, gradeOption
       return;
     }
     setError(null);
-    onGenerateQuestions({ syllabus, grade, subject, difficulty });
+
+    const params = new URLSearchParams({
+      syllabus: syllabus ?? '',
+      grade: grade ?? '',
+      subject: subject ?? '',
+      topic: topic ?? '',
+      difficulty: String(difficulty),
+    }).toString();
+
+    // Navigate to the client-side route
+    window.location.href = `/PracticeTool?${params}`;
   };
 
   return (
@@ -61,7 +95,7 @@ export function PracticeMenu({ onGenerateQuestions, syllabusOptions, gradeOption
           <div style={{ paddingBlock: '1rem' }}>
             <Title order={2}>Topics:</Title>
           </div>
-          <SelectList />
+          <SearchableSelect value={topic} onChange={setTopic} data={topicOptions} />
         </Grid.Col>
         <Grid.Col span={{ base: 3.5 }}>
           <div style={{ paddingBlock: '1rem' }}>
@@ -73,7 +107,7 @@ export function PracticeMenu({ onGenerateQuestions, syllabusOptions, gradeOption
           <Slider
             color="blue"
             value={difficulty}
-            onChange={setDifficulty} // Update slider value
+            onChange={setDifficulty}
             marks={[
               { value: 20, label: '20' },
               { value: 40, label: '40' },

@@ -2,32 +2,31 @@ import { useState } from 'react';
 import { Checkbox, Combobox, Group, TextInput, useCombobox } from '@mantine/core';
 import classes from './SelectList.module.css';
 
-const groceries = ['Select All', '🍎 Apples', '🍌 Bananas', '🥦 Broccoli', '🥕 Carrots', '🍫 Chocolate'];
+type SelectListProps = {
+  value: string[];
+  onChange: (value: string[]) => void;
+  data: string[];
+};
 
-export function SelectList() {
+export function SelectList({ value, onChange, data }: SelectListProps) {
   const combobox = useCombobox();
-
-  // Initialize all items as selected
-  const [value, setValue] = useState<string[]>(groceries);
   const [search, setSearch] = useState('');
 
   const handleValueSelect = (val: string) => {
     if (val === 'Select All') {
-      if (value.length === groceries.length) {
+      if (value.length === data.length) {
         // Deselect all if all are selected
-        setValue([]);
+        onChange([]);
       } else {
         // Select all if not all are selected
-        setValue(groceries);
+        onChange(data);
       }
     } else {
-      setValue((current) =>
-        current.includes(val) ? current.filter((v) => v !== val) : [...current, val]
-      );
+      onChange(value.includes(val) ? value.filter((v) => v !== val) : [...value, val]);
     }
   };
 
-  const options = groceries
+  const options = data
     .filter((item) => item.toLowerCase().includes(search.toLowerCase().trim()))
     .map((item) => (
       <Combobox.Option
@@ -35,7 +34,7 @@ export function SelectList() {
         key={item}
         active={value.includes(item)}
         onMouseOver={() => combobox.resetSelectedOption()}
-        className={classes.option} /* Apply option class for border and padding */
+        className={classes.option}
       >
         <Group gap="sm">
           <Checkbox
@@ -54,7 +53,7 @@ export function SelectList() {
     <Combobox store={combobox} onOptionSubmit={handleValueSelect}>
       <Combobox.EventsTarget>
         <TextInput
-          placeholder="Search groceries"
+          placeholder="Search topics"
           classNames={{ input: classes.input }}
           value={search}
           onChange={(event) => {
